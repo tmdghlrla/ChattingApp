@@ -2,7 +2,7 @@ package com.tmddozla.chattingapp.api;
 
 import android.content.Context;
 
-import com.qooke.chattingapp.config.Config;
+import com.tmddozla.chattingapp.config.Config;
 
 import java.util.concurrent.TimeUnit;
 

@@ -1,6 +1,5 @@
 plugins {
     id("com.android.application")
-    // Add the Google services Gradle plugin
     id("com.google.gms.google-services")
 }
 
@@ -10,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.tmddozla.chattingapp"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

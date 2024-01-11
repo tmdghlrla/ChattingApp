@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">ChattingApp</string>
+
+    <string name="txt_login"><u>로그인</u></string>
+    <string name="btn_login"><u>로그인</u></string>
+    <string name="txt_register"><u>회원가입</u></string>
+    <string name="btn_register"><u>회원가입</u></string>
+
+    <string name="txt_newFriend"><u>친구등록</u></string>
+    <string name="txt_friendList"><u>메시지</u></string>
+    <string name="txt_message"><u>메시지</u></string>
+    <string name="img_logout"><u>로그아웃</u></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
