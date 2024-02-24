@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:backgroundTint="#FFFFFF"
     tools:context=".LoginActivity">
 
     <LinearLayout
@@ -20,6 +22,7 @@
             android:layout_marginBottom="40dp"
             android:gravity="center"
             android:text="로그인"
+            android:textColor="#000000"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -42,6 +45,8 @@
             android:ems="10"
             android:hint="이메일 입력..."
             android:inputType="textEmailAddress"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
             android:textSize="20sp" />
 
         <EditText
@@ -55,6 +60,8 @@
             android:ems="10"
             android:hint="비밀번호 입력..."
             android:inputType="textPassword"
+            android:textColor="#000000"
+            android:textColorHint="#000000"
             android:textSize="20sp" />
 
         <Button
@@ -75,6 +82,7 @@
             android:layout_marginTop="15dp"
             android:gravity="center"
             android:text="@string/txt_register"
+            android:textColor="#000000"
             android:textSize="20sp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

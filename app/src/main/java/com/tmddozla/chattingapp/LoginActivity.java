@@ -2,6 +2,7 @@ package com.tmddozla.chattingapp;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.tmddozla.chattingapp.config.Config;
 
 import java.util.regex.Pattern;
 
@@ -88,6 +90,13 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            if(user != null) {
+                                String uid = user.getUid();
+                                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sp.edit();
+                                editor.putString("token", uid);
+                                editor.apply();
+                            }
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -99,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         dismissProgress();
 
-                        Intent intent = new Intent(LoginActivity.this, ChatActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
 
                     }

@@ -3,6 +3,7 @@ package com.tmddozla.chattingapp;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         String token = sp.getString("token", "");
 
         if (token.isEmpty()) {
-            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
@@ -41,12 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-//        firstFragment = new FirstFragment();
-//        secondFragment = new SecondFragment();
-//        thirdFragment = new ThirdFragment();
-//        fourthFragment = new FourthFragment();
+        secondFragment = new secondFragment();
+        thirdFragment = new thirdFragment();
+        fourthFragment = new fourthFragment();
 
-
+        loadFragment(secondFragment);
 
         // 바텀 네비게이션 뷰 클릭 했을때
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -54,17 +54,12 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 Fragment fragment = null;
-
-                if (itemId == R.id.firstFragment) {
-                    // 내 포스팅 리스트 보여주는 화면
-                    fragment = firstFragment;
-
-                } else if (itemId == R.id.secondFragment) {
+                if(itemId == R.id.secondFragment) {
                     fragment = secondFragment;
-
                 } else if (itemId == R.id.thirdFragment) {
                     fragment = thirdFragment;
-
+                } else if (itemId == R.id.fourthFragment) {
+                    fragment = fourthFragment;
                 }
                 return loadFragment(fragment);
             }
