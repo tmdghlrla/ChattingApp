@@ -4,6 +4,7 @@ public class Room {
     public String nickName;
     public String count;
     public String LastMessage;
+    public String roomNumber;
 
     public Room() {
     }

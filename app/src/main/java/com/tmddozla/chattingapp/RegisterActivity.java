@@ -2,6 +2,7 @@ package com.tmddozla.chattingapp;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.tmddozla.chattingapp.config.Config;
 
 import java.util.regex.Pattern;
 
@@ -32,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText editPassword;
     Button btnRegister;
     TextView txtLogin;
-
+    String nickname = "";
 
     private FirebaseAuth mAuth;
 
@@ -57,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nickname = editNickname.getText().toString().trim();
+                nickname = editNickname.getText().toString().trim();
                 String email = editEmail.getText().toString().trim();
                 String password = editPassword.getText().toString().trim();
 
@@ -89,6 +91,13 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d("TAG", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
+                            String email = user.getEmail();
+                            SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                            SharedPreferences.Editor  editor = sp.edit();
+                            editor.putString("nick" + email, nickname);
+                            editor.putString("email", email);
+                            editor.apply();
+
                             updateUI(user);
                         } else {
                             // If sign in fails, display a message to the user.

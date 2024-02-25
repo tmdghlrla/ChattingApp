@@ -1,7 +1,9 @@
 package com.tmddozla.chattingapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -16,8 +18,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tmddozla.chattingapp.adapter.ChatAdapter;
 import com.tmddozla.chattingapp.adapter.ChatListAdapter;
+import com.tmddozla.chattingapp.config.Config;
 import com.tmddozla.chattingapp.model.Chat;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class ChatActivity extends AppCompatActivity {
@@ -29,6 +33,8 @@ public class ChatActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ChatListAdapter adapter;
+    String email = "";
+    String nickName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +47,12 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
+        SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+        email = sp.getString("email", "");
+        nickName = sp.getString("nick" + email, "");
+
         int index = getIntent().getIntExtra("index", 0);
+        Log.i("ttag", "index : " + index);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("messageList").child("" + index);
 
@@ -52,30 +63,51 @@ public class ChatActivity extends AppCompatActivity {
                 // dataSnapshot에는 현재 데이터베이스의 스냅샷이 포함됩니다.
 
                 // 스냅샷에서 데이터를 가져와서 처리합니다.
-                int i = 0;
                 chatArrayList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    // 각 자식 노드에 대해 데이터를 가져와 처리합니다.
-                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                        // "messageList" 하위의 각 데이터에서 필요한 값을 가져옵니다.
-                        String message = childSnapshot.child("message").getValue(String.class);
-                        String createdAt = childSnapshot.child("createdAt").getValue(String.class);
-                        String nickname = childSnapshot.child("nickname").getValue(String.class);
+                    // "messageList" 하위의 각 데이터에서 필요한 값을 가져옵니다.
+                    String message = snapshot.child("message").getValue(String.class);
+                    String createdAt = snapshot.child("createdAt").getValue(String.class);
+                    String nickname = snapshot.child("nickname").getValue(String.class);
 
-                        Chat chat = new Chat(message, createdAt, nickname, i);
-                        chatArrayList.add(chat);
-                        Log.i("tag", "Message: " + message + ", Created At: " + createdAt + ", Nickname: " + nickname);
+                    if(nickname == null) {
+                        nickname = snapshot.child("nickName").getValue(String.class);
                     }
-                    i++;
+
+                    Chat chat = new Chat(message, createdAt, nickname);
+                    chatArrayList.add(chat);
+                    Log.i("tag", "Message: " + message + ", Created At: " + createdAt + ", Nickname: " + nickname);
                 }
-                adapter = new ChatListAdapter(ChatActivity.this, chatArrayList);
+                adapter = new ChatListAdapter(ChatActivity.this, chatArrayList, nickName);
                 recyclerView.setAdapter(adapter);
+                recyclerView.scrollToPosition(chatArrayList.size()-1);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // 데이터베이스에 오류가 발생하면 호출됩니다.
                 Log.e("YourFragment", "Error: " + databaseError.getMessage());
+            }
+        });
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String sentence = editText.getText().toString().trim();
+                LocalTime currentTime = LocalTime.now();
+
+                // 시간과 분 추출
+                int hour = currentTime.getHour();
+                int minute = currentTime.getMinute();
+                Log.i("tag", "nickName : " + nickName);
+                // 한 자리 수일 때는 앞에 0을 붙여서 두 자리로 표현
+                String formattedTime = String.format("%02d:%02d", hour, minute);
+
+                if (sentence.equals("")) {
+                    return;
+                }
+                Chat chat = new Chat(sentence, formattedTime, nickName);
+                mDatabase.push().setValue(chat);
             }
         });
     }

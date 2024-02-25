@@ -1,5 +1,6 @@
 package com.tmddozla.chattingapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if (itemId == R.id.thirdFragment) {
                     fragment = thirdFragment;
                 } else if (itemId == R.id.fourthFragment) {
-                    fragment = fourthFragment;
+                    showAlertDialog();
                 }
                 return loadFragment(fragment);
             }
@@ -74,6 +76,31 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    private void showAlertDialog() {
+        // 버튼 3개까지 가능
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        // 이 다이얼로그의 외곽부분을 눌렀을때 사라지지 않도록 하는 코드
+        builder.setCancelable(false);
+
+        builder.setTitle("로그아웃");
+        builder.setMessage("로그아웃 하시겠습니까?" );
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //        현재 이 액티비티를 종료한다. => 액티비티가 1개면 앱이 종료
+                SharedPreferences sp = getSharedPreferences(Config.PREFERENCE_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("token", "");
+                editor.apply();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setNegativeButton("취소", null);
+        builder.show();
     }
 
 

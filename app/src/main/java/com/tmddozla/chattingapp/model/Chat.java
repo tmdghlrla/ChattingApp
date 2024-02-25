@@ -17,4 +17,10 @@ public class Chat implements Serializable {
         this.nickName = nickName;
         this.roomNumber = roomNumber;
     }
+
+    public Chat(String message, String createdAt, String nickName) {
+        this.message = message;
+        this.createdAt = createdAt;
+        this.nickName = nickName;
+    }
 }

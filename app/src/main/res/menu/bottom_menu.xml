@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/baseline_list_24"
-        android:title="친구목록" />
+        android:title="채팅방 목록" />
     <item
         android:id="@+id/thirdFragment"
         android:layout_width="wrap_content"
@@ -18,5 +18,6 @@
         android:id="@+id/fourthFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_logout_24"
         android:title="로그아웃" />
 </menu>

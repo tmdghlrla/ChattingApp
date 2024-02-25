@@ -1,5 +1,8 @@
 package com.tmddozla.chattingapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tmddozla.chattingapp.adapter.ChatAdapter;
+import com.tmddozla.chattingapp.config.Config;
 import com.tmddozla.chattingapp.model.Chat;
 import com.tmddozla.chattingapp.model.Room;
 
@@ -77,7 +81,8 @@ public class secondFragment extends Fragment {
     ArrayList<Room> roomArrayList = new ArrayList<>();
     RecyclerView recyclerView;
     ChatAdapter adapter;
-
+    String email = "";
+    String nickName = "";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -87,6 +92,10 @@ public class secondFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        SharedPreferences sp = getActivity().getSharedPreferences(Config.PREFERENCE_NAME, Context.MODE_PRIVATE);
+        email = sp.getString("email", "");
+        nickName = sp.getString("nick" + email, "");
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -100,22 +109,22 @@ public class secondFragment extends Fragment {
                 int j = 0;
                 chatArrayList.clear();
                 roomArrayList.size();
-                String nickName = "";
+                String name = "";
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.i("tag", "node : " + snapshot.getKey()); // 2
                     if (snapshot.getKey().equals("chatRoomList")) {
                         for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                             for (DataSnapshot childDataSnapshot : childSnapshot.getChildren()) {
                                 // "messageList" 하위의 각 데이터에서 필요한 값을 가져옵니다.
-                                if (nickName == "") {
-                                    nickName = childDataSnapshot.getKey();
+                                if (name == "") {
+                                    name = childDataSnapshot.getKey();
                                 } else {
-                                    nickName = nickName + ", " + childDataSnapshot.getKey();
-                                    Log.i("tag", "nickName: " + nickName);
+                                    name = name + ", " + childDataSnapshot.getKey();
+                                    Log.i("tag", "nickName: " + name);
                                 }
                                 j++;
                             }
-                            Room room = new Room(nickName, "" + j);
+                            Room room = new Room(name, "" + j);
                             roomArrayList.add(room);
                             Log.i("tag", "roomSize : " + roomArrayList.size()); // 채팅방 개수
                             Log.i("tag", "j : " + j); // 인원수
@@ -131,6 +140,9 @@ public class secondFragment extends Fragment {
                                 String message = childDataSnapshot.child("message").getValue(String.class);
                                 String createdAt = childDataSnapshot.child("createdAt").getValue(String.class);
                                 String nickname = childDataSnapshot.child("nickname").getValue(String.class);
+                                if(nickname == null) {
+                                    nickname = childDataSnapshot.child("nickName").getValue(String.class);
+                                }
 
                                 Chat chat = new Chat(message, createdAt, nickname, i);
                                 chatArrayList.add(chat);
@@ -140,7 +152,7 @@ public class secondFragment extends Fragment {
                         i++;
                     }
                 }
-                adapter = new ChatAdapter(getActivity(), chatArrayList, roomArrayList);
+                adapter = new ChatAdapter(getActivity(), chatArrayList, roomArrayList, nickName, email);
                 recyclerView.setAdapter(adapter);
             }
 
@@ -154,7 +166,12 @@ public class secondFragment extends Fragment {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String size = "" + roomArrayList.size();
+                Log.i("ttag", "size : " + size);
+                mDatabase.child("chatRoomList").child(size).child(nickName).setValue(email);
+                Intent intent = new Intent(getActivity(), ChatActivity.class);
+                intent.putExtra("index", Integer.parseInt(size));
+                getActivity().startActivity(intent);
             }
         });
 

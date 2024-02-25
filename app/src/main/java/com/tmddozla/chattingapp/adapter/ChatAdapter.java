@@ -2,6 +2,7 @@ package com.tmddozla.chattingapp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tmddozla.chattingapp.ChatActivity;
 import com.tmddozla.chattingapp.R;
 import com.tmddozla.chattingapp.model.Chat;
@@ -25,11 +28,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     Context context; // 엑티비티 정보
     ArrayList<Chat> chatArrayList;
     ArrayList<Room> roomArrayList;
+    String nickName;
+    String email;
+    // Firebase 데이터베이스 초기화
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    // DatabaseReference 객체 설정
+    DatabaseReference mDatabase = database.getReference();
+    String name;
 
-    public ChatAdapter(Context context, ArrayList<Chat> chatArrayList, ArrayList<Room> roomArrayList) {
+    public ChatAdapter(Context context, ArrayList<Chat> chatArrayList, ArrayList<Room> roomArrayList, String nickName, String email) {
         this.context = context;
         this.chatArrayList = chatArrayList;
         this.roomArrayList = roomArrayList;
+        this.nickName = nickName;
+        this.email = email;
     }
 
     // 4. 오버라이딩 함수를 구현한다.
@@ -81,6 +93,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     int index = getAdapterPosition();
+                    name = txtNick.getText().toString().trim();
+                    Log.i("tag", "name : " + name);
+
+                    if(!name.contains(nickName)) {
+                        mDatabase.child("chatRoomList").child("" + index).child(nickName).setValue(email);
+                    }
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("index", index);
                     context.startActivity(intent);
