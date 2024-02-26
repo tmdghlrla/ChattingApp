@@ -101,7 +101,7 @@ public class thirdFragment extends Fragment {
                 int i = 0;
                 int j = 0;
                 chatArrayList.clear();
-                roomArrayList.size();
+                roomArrayList.clear();
                 String name = "";
                 String myNick = "";
                 ArrayList<Integer> checkArrayList = new ArrayList<>();
@@ -119,7 +119,7 @@ public class thirdFragment extends Fragment {
                                 }
                                 j++;
                             }
-                            if(nickName.contains(myNick)) {
+                            if(name.contains(myNick)) {
                                 Room room = new Room(name, "" + j);
                                 room.roomNumber = key;
                                 roomArrayList.add(room);

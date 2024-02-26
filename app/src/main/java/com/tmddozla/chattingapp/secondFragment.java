@@ -108,7 +108,7 @@ public class secondFragment extends Fragment {
                 int i = 0;
                 int j = 0;
                 chatArrayList.clear();
-                roomArrayList.size();
+                roomArrayList.clear();
                 String name = "";
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Log.i("tag", "node : " + snapshot.getKey()); // 2
@@ -154,6 +154,7 @@ public class secondFragment extends Fragment {
                 }
                 adapter = new ChatAdapter(getActivity(), chatArrayList, roomArrayList, nickName, email);
                 recyclerView.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -176,5 +177,10 @@ public class secondFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }
