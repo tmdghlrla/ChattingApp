@@ -108,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
                 Chat chat = new Chat(sentence, formattedTime, nickName);
                 mDatabase.push().setValue(chat);
+                editText.setText("");
             }
         });
     }
